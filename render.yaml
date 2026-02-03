@@ -1,0 +1,71 @@
+# Render Blueprint - https://render.com/docs/blueprint-spec
+services:
+  # Dashboard (web service)
+  - type: web
+    name: trend2token-dashboard
+    runtime: node
+    buildCommand: npm install
+    startCommand: node src/dashboard/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DASHBOARD_PORT
+        value: "10000"
+      - key: NEYNAR_API_KEY
+        sync: false
+      - key: NEYNAR_CLIENT_ID
+        sync: false
+      - key: FARCASTER_SIGNER_UUIDS
+        sync: false
+      - key: TRACKED_ACCOUNTS
+        value: dwr,vitalik.eth,jesse,bitfloorsghost.eth,deployer,apex777.eth,phil,tervo,neynar,toadyhawk.eth,zinger
+      - key: TRACKED_CHANNELS
+        value: base,degen,farcaster,memes,replyguys
+      - key: KEYWORDS
+        value: memecoin,airdrop,launch,token,ai,claude,moot
+      - key: POLL_INTERVAL_MS
+        value: "300000"
+      - key: VIRALITY_THRESHOLD
+        value: "60"
+      - key: AUTH_TOKEN
+        sync: false
+      - key: CT0
+        sync: false
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+
+  # Monitor (background worker)
+  - type: worker
+    name: trend2token-monitor
+    runtime: node
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEYNAR_API_KEY
+        sync: false
+      - key: NEYNAR_CLIENT_ID
+        sync: false
+      - key: FARCASTER_SIGNER_UUIDS
+        sync: false
+      - key: TRACKED_ACCOUNTS
+        value: dwr,vitalik.eth,jesse,bitfloorsghost.eth,deployer,apex777.eth,phil,tervo,neynar,toadyhawk.eth,zinger
+      - key: TRACKED_CHANNELS
+        value: base,degen,farcaster,memes,replyguys
+      - key: KEYWORDS
+        value: memecoin,airdrop,launch,token,ai,claude,moot
+      - key: POLL_INTERVAL_MS
+        value: "300000"
+      - key: VIRALITY_THRESHOLD
+        value: "60"
+      - key: AUTH_TOKEN
+        sync: false
+      - key: CT0
+        sync: false
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
