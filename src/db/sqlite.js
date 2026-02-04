@@ -148,6 +148,7 @@ function initSchema() {
       source_cast_url TEXT,
       source_author TEXT,
       source_text TEXT,
+      source_type TEXT DEFAULT 'farcaster',
       virality_score REAL NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       status TEXT DEFAULT 'pending',
@@ -234,6 +235,7 @@ function migrateSchema() {
 
   addColumnIfMissing('launches', 'signer_uuid');
   addColumnIfMissing('token_queue', 'signer_uuid');
+  addColumnIfMissing('token_queue', 'source_type', "'farcaster'");
   addColumnIfMissing('scheduled_casts', 'signer_uuid');
   addColumnIfMissing('activity_log', 'signer_uuid');
   // Launched tokens: migrate to signer-aware schema if needed
@@ -745,8 +747,8 @@ export function queueToken(data) {
   const result = db.prepare(`
     INSERT INTO token_queue (
       trend_id, signer_uuid, token_name, token_ticker, cast_text, image_url,
-      source_cast_hash, source_cast_url, source_author, source_text, virality_score
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      source_cast_hash, source_cast_url, source_author, source_text, source_type, virality_score
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     data.trendId,
     data.signerUuid || null,
@@ -758,6 +760,7 @@ export function queueToken(data) {
     data.sourceCastUrl || null,
     data.sourceAuthor || null,
     data.sourceText || null,
+    data.sourceType || 'farcaster',
     data.viralityScore
   );
   return result.lastInsertRowid;

@@ -1207,11 +1207,24 @@
         const queue = await res.json();
 
         const tbody = document.getElementById('tokenQueueTable');
-        tbody.innerHTML = queue.map(t => `
+        const sourceColors = {
+          farcaster: { bg: '#8b5cf6', label: 'Farcaster' },
+          pumpfun: { bg: '#e879f9', label: '🎓 Pump.fun' },
+          dexscreener: { bg: '#0f766e', label: 'DexScreener' },
+          trending: { bg: '#f59e0b', label: 'Trending' },
+          account: { bg: '#0ea5a3', label: 'Account' },
+          channel: { bg: '#3b82f6', label: 'Channel' },
+          search: { bg: '#d97706', label: 'Search' },
+        };
+        tbody.innerHTML = queue.map(t => {
+          const sourceType = t.source_type || 'farcaster';
+          const sourceStyle = sourceColors[sourceType] || sourceColors.farcaster;
+          return `
           <tr>
             <td>
               <strong>$${t.token_ticker}</strong>
               <div style="font-size: 11px; color: #888;">${t.token_name}</div>
+              <span style="font-size: 9px; padding: 2px 6px; border-radius: 4px; background: ${sourceStyle.bg}; color: white;">${sourceStyle.label}</span>
             </td>
             <td class="text-truncate" style="max-width: 250px;" title="${(t.cast_text || '').replace(/"/g, '&quot;')}">
               ${t.cast_text || ''}
@@ -1232,7 +1245,7 @@
               ${t.launch_cast_hash ? `<span style="font-size: 10px; color: #666;">${t.launch_cast_hash.slice(0, 10)}...</span>` : ''}
             </td>
           </tr>
-        `).join('') || '<tr><td colspan="6" style="text-align: center; color: #666;">No tokens in queue</td></tr>';
+        `}).join('') || '<tr><td colspan="6" style="text-align: center; color: #666;">No tokens in queue</td></tr>';
       } catch (err) {
         console.error('Failed to fetch token queue:', err);
       }

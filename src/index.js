@@ -134,6 +134,7 @@ async function queueTokenForReview() {
     sourceCastUrl,
     sourceAuthor: trend.author_handle,
     sourceText: trend.text,
+    sourceType: trend.source || 'farcaster',
     viralityScore: trend.virality_score,
   });
 
@@ -204,6 +205,33 @@ async function runCycle() {
   console.log(`Cycle completed in ${(elapsed / 1000).toFixed(1)}s`);
 }
 
+// Fast cycle for pump.fun only (every 30 seconds)
+async function runPumpFunCycle() {
+  if (!config.pumpfunEnabled) return;
+
+  try {
+    const pumpfunTokens = await fetchPumpFunGraduated();
+    if (pumpfunTokens.length === 0) return;
+
+    console.log(`\n[PumpFun] Found ${pumpfunTokens.length} graduated tokens`);
+
+    // Process pump.fun tokens
+    const newTrends = await processCasts(pumpfunTokens);
+    if (newTrends > 0) {
+      console.log(`[PumpFun] Added ${newTrends} new trends`);
+
+      // Score and queue
+      const { scored, aboveThreshold } = await scoreTrends();
+      if (aboveThreshold > 0) {
+        console.log(`[PumpFun] ${aboveThreshold} above threshold`);
+        await queueTokenForReview();
+      }
+    }
+  } catch (err) {
+    console.error(`[PumpFun] Error: ${err.message}`);
+  }
+}
+
 async function main() {
   console.log('Trend2Token - Farcaster Viral Trend Monitor & Token Deployer');
   console.log('='.repeat(60));
@@ -251,13 +279,22 @@ async function main() {
   // Run initial cycle
   await runCycle();
 
-  // Schedule recurring cycles
+  // Start fast pump.fun polling (every 30 seconds)
+  const pumpfunInterval = setInterval(() => {
+    if (isRunning && config.pumpfunEnabled) {
+      runPumpFunCycle();
+    }
+  }, 30000);
+
+  // Schedule recurring full cycles
   while (isRunning) {
     await new Promise((resolve) => setTimeout(resolve, config.pollIntervalMs));
     if (isRunning) {
       await runCycle();
     }
   }
+
+  clearInterval(pumpfunInterval);
 }
 
 main().catch((err) => {
