@@ -18,6 +18,7 @@ import {
 } from './db/sqlite.js';
 import { fetchAllCasts } from './monitors/farcaster.js';
 import { fetchDexscreenerPairs } from './monitors/dexscreener.js';
+import { fetchPumpFunGraduated } from './monitors/pumpfun.js';
 import { calculateViralityScore, meetsThreshold } from './scoring/virality.js';
 import { tokenExists } from './checks/internal.js';
 import { generateTokenName, generateFallbackName } from './generation/tokenName.js';
@@ -160,9 +161,13 @@ async function runCycle() {
   try {
     // Fetch casts from all sources
     console.log('\nFetching Farcaster casts...');
-    const [casts, dexPairs] = await Promise.all([fetchAllCasts(), fetchDexscreenerPairs()]);
-    const allTrends = [...casts, ...dexPairs];
-    console.log(`Fetched ${casts.length} casts, ${dexPairs.length} Dexscreener pairs`);
+    const [casts, dexPairs, pumpfunTokens] = await Promise.all([
+      fetchAllCasts(),
+      fetchDexscreenerPairs(),
+      fetchPumpFunGraduated(),
+    ]);
+    const allTrends = [...casts, ...dexPairs, ...pumpfunTokens];
+    console.log(`Fetched ${casts.length} casts, ${dexPairs.length} Dexscreener pairs, ${pumpfunTokens.length} pump.fun graduated`);
 
     logActivity(
       'fetch_complete',

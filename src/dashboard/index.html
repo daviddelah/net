@@ -193,6 +193,7 @@
     .source-channel { border-left: 2px solid #0f172a; }
     .source-search { border-left: 2px solid #d97706; }
     .source-dexscreener { border-left: 2px solid #0f766e; }
+    .source-pumpfun { border-left: 2px solid #e879f9; background: rgba(232, 121, 249, 0.1); }
 
     .text-truncate {
       max-width: 420px;
@@ -877,6 +878,7 @@
         channel: 'source-channel',
         search: 'source-search',
         dexscreener: 'source-dexscreener',
+        pumpfun: 'source-pumpfun',
       };
       return classes[source] || '';
     }
@@ -1055,7 +1057,7 @@
 
         const tbody = document.getElementById('trendsTable');
         tbody.innerHTML = trends.map(t => {
-          // Build DexScreener link for dexscreener sources
+          // Build DexScreener link for dexscreener/pumpfun sources
           let sourceHtml = `<span class="source-badge ${getSourceClass(t.source)}">${t.source || 'unknown'}</span>`;
           if (t.source === 'dexscreener' && t.cast_hash?.startsWith('dex:')) {
             const parts = t.cast_hash.split(':');
@@ -1064,6 +1066,14 @@
               const pairAddress = parts.slice(2).join(':');
               const dexUrl = `https://dexscreener.com/${chainId}/${pairAddress}`;
               sourceHtml = `<a href="${dexUrl}" target="_blank" class="source-badge ${getSourceClass(t.source)}" style="text-decoration: none;">${t.source} ↗</a>`;
+            }
+          } else if (t.source === 'pumpfun' && t.cast_hash?.startsWith('pumpfun:')) {
+            const parts = t.cast_hash.split(':');
+            if (parts.length >= 3) {
+              const chainId = parts[1];
+              const pairAddress = parts.slice(2).join(':');
+              const dexUrl = `https://dexscreener.com/${chainId}/${pairAddress}`;
+              sourceHtml = `<a href="${dexUrl}" target="_blank" class="source-badge ${getSourceClass(t.source)}" style="text-decoration: none;">🎓 pump.fun ↗</a>`;
             }
           }
           return `

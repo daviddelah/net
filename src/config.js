@@ -36,6 +36,12 @@ export const config = {
     .map((c) => c.trim())
     .filter(Boolean),
 
+  // Pump.fun graduated tokens
+  pumpfunEnabled: (process.env.PUMPFUN_ENABLED || 'true') === 'true',
+  pumpfunMaxAgeMinutes: parseInt(process.env.PUMPFUN_MAX_AGE_MINUTES || '30', 10),
+  pumpfunMinLiquidity: parseFloat(process.env.PUMPFUN_MIN_LIQUIDITY || '5000'),
+  pumpfunMaxResults: parseInt(process.env.PUMPFUN_MAX_RESULTS || '20', 10),
+
   // Database
   dbPath: process.env.DB_PATH || new URL('../data/launches.db', import.meta.url).pathname,
 
