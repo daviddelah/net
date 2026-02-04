@@ -849,12 +849,27 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// Scheduled cast processor - runs every 30 seconds
+// Scheduled cast processor - runs every 30 seconds, posts max 1 cast per cycle
+let lastCastTime = 0;
+const MIN_CAST_INTERVAL_MS = 60000; // Minimum 1 minute between casts
+
 async function processScheduledCasts() {
   try {
     const pendingCasts = getPendingScheduledCasts();
 
-    for (const scheduled of pendingCasts) {
+    // Only process one cast per cycle to avoid spam
+    if (pendingCasts.length === 0) return;
+
+    // Rate limit: wait at least MIN_CAST_INTERVAL_MS between casts
+    const timeSinceLastCast = Date.now() - lastCastTime;
+    if (timeSinceLastCast < MIN_CAST_INTERVAL_MS) {
+      return;
+    }
+
+    // Only take the first (oldest) pending cast
+    const castsToProcess = [pendingCasts[0]];
+
+    for (const scheduled of castsToProcess) {
       if (!scheduled.signer_uuid) {
         updateScheduledCastStatus(scheduled.id, 'failed', null, 'Missing signer UUID');
         logActivity(
@@ -874,6 +889,7 @@ async function processScheduledCasts() {
 
       if (result.success) {
         updateScheduledCastStatus(scheduled.id, 'posted', result.castHash);
+        lastCastTime = Date.now(); // Update rate limit timer
         logActivity(
           'scheduled_cast_posted',
           {
