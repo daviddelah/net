@@ -117,10 +117,20 @@ async function queueTokenForReview() {
   // Build the default cast text
   const castText = `@clanker deploy $${tokenInfo.ticker} "${tokenInfo.name}"`;
 
-  // Build source cast URL (Warpcast format)
-  const sourceCastUrl = trend.cast_hash
-    ? `https://warpcast.com/${trend.author_handle}/${trend.cast_hash.slice(0, 10)}`
-    : null;
+  // Build source URL based on source type
+  let sourceCastUrl = null;
+  if (trend.source === 'pumpfun' || trend.source === 'dexscreener') {
+    // Extract chain and pair address from cast_hash (format: "dex:chain:address" or "pumpfun:chain:address")
+    const parts = trend.cast_hash?.split(':') || [];
+    if (parts.length >= 3) {
+      const chainId = parts[1];
+      const pairAddress = parts.slice(2).join(':');
+      sourceCastUrl = `https://dexscreener.com/${chainId}/${pairAddress}`;
+    }
+  } else if (trend.cast_hash) {
+    // Farcaster - Warpcast URL
+    sourceCastUrl = `https://warpcast.com/${trend.author_handle}/${trend.cast_hash.slice(0, 10)}`;
+  }
 
   // Queue the token for review
   const queueId = queueToken({

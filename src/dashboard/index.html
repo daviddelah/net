@@ -1232,7 +1232,7 @@
             </td>
             <td>
               <div style="font-size: 11px;">@${t.source_author || 'unknown'}</div>
-              ${t.source_cast_url ? `<a href="${t.source_cast_url}" target="_blank" style="font-size: 10px; color: #8b5cf6;">View Cast</a>` : ''}
+              ${t.source_cast_url ? `<a href="${t.source_cast_url}" target="_blank" style="font-size: 10px; color: ${sourceStyle.bg};">${sourceType === 'pumpfun' || sourceType === 'dexscreener' ? 'View on DexScreener ↗' : 'View Cast ↗'}</a>` : ''}
             </td>
             <td><span class="score ${getScoreClass(t.virality_score)}">${t.virality_score?.toFixed(1) || '0'}</span></td>
             <td><span class="status-badge status-${t.status}">${t.status}</span></td>
