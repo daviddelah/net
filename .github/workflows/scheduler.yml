@@ -23,10 +23,10 @@ jobs:
 
       - name: Run scheduler
         env:
-          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_TOKEN }}
-          NEYNAR_API_KEY: ${{ secrets.NEYNAR_API_KEY }}
-          FARCASTER_SIGNER_UUIDS: ${{ secrets.FARCASTER_SIGNER_UUIDS }}
+          TURSO_DATABASE_URL: ${{ vars.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ vars.TURSO_TOKEN }}
+          NEYNAR_API_KEY: ${{ vars.NEYNAR_API_KEY }}
+          FARCASTER_SIGNER_UUIDS: ${{ vars.FARCASTER_SIGNER_UUIDS }}
           AUTH_TOKEN: ${{ secrets.TWITTER_AUTH_TOKEN }}
           CT0: ${{ secrets.TWITTER_CT0 }}
         run: node src/scheduler/run.js
