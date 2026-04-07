@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 export const config = {
-  // Neynar (Farcaster)
+  // Farcaster (Neynar)
   neynarApiKey: process.env.NEYNAR_API_KEY || '',
   neynarSignerUuids: (process.env.FARCASTER_SIGNER_UUIDS || process.env.FARCASTER_SIGNER_UUID || '')
     .split(',')
@@ -9,42 +9,24 @@ export const config = {
     .filter(Boolean),
   neynarClientId: process.env.NEYNAR_CLIENT_ID || '',
 
-  // Farcaster monitoring
-  trackedAccounts: (process.env.TRACKED_ACCOUNTS || 'dwr,vitalik.eth,jessepollak').split(',').map(a => a.trim()),
-  accountBoostMultiplier: parseFloat(process.env.ACCOUNT_BOOST_MULTIPLIER || '1.5'),
-  trackedChannels: (process.env.TRACKED_CHANNELS || 'base,degen,farcaster').split(',').map(c => c.trim()),
-  keywords: (process.env.KEYWORDS || 'memecoin,airdrop,launch').split(',').map(k => k.trim()),
+  // Twitter/X (bird CLI)
+  twitterAuthToken: process.env.AUTH_TOKEN || '',
+  twitterCt0: process.env.CT0 || '',
 
-  // Timing
-  pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || '120000', 10),
-  launchCooldownMs: parseInt(process.env.LAUNCH_COOLDOWN_MS || '300000', 10),
+  // Database (Turso remote or local file)
+  dbUrl: process.env.TURSO_DATABASE_URL || `file:${new URL('../data/net.db', import.meta.url).pathname}`,
+  dbAuthToken: process.env.TURSO_AUTH_TOKEN || '',
 
-  // Thresholds
-  viralityThreshold: parseInt(process.env.VIRALITY_THRESHOLD || '70', 10),
-  maxLaunchesPerDay: parseInt(process.env.MAX_LAUNCHES_PER_DAY || '10', 10),
+  // Server
+  port: parseInt(process.env.PORT || '3000', 10),
 
-  // Dexscreener (trending pairs)
-  dexscreenerEnabled: (process.env.DEXSCREENER_ENABLED || 'true') === 'true',
-  dexscreenerMaxPairs: parseInt(process.env.DEXSCREENER_MAX_PAIRS || '30', 10),
-  dexscreenerMaxAgeMinutes: parseInt(process.env.DEXSCREENER_MAX_AGE_MINUTES || '30', 10),
-  dexscreenerMinVolumeM5: parseFloat(process.env.DEXSCREENER_MIN_VOLUME_M5 || '20000'),
-  dexscreenerMinTrendingScore: parseFloat(
-    process.env.DEXSCREENER_MIN_TRENDING_SCORE || '0'
-  ),
-  dexscreenerExcludedChains: (process.env.DEXSCREENER_EXCLUDED_CHAINS || 'base')
-    .split(',')
-    .map((c) => c.trim())
-    .filter(Boolean),
+  // Media uploads
+  uploadsDir: process.env.UPLOADS_DIR || new URL('../data/uploads', import.meta.url).pathname,
 
-  // Pump.fun graduated tokens
-  pumpfunEnabled: (process.env.PUMPFUN_ENABLED || 'true') === 'true',
-  pumpfunMaxAgeMinutes: parseInt(process.env.PUMPFUN_MAX_AGE_MINUTES || '30', 10),
-  pumpfunMinLiquidity: parseFloat(process.env.PUMPFUN_MIN_LIQUIDITY || '5000'),
-  pumpfunMaxResults: parseInt(process.env.PUMPFUN_MAX_RESULTS || '20', 10),
+  // Timezone (for queue slots and recurring rules)
+  timezone: process.env.TZ || 'UTC',
 
-  // Database
-  dbPath: process.env.DB_PATH || new URL('../data/launches.db', import.meta.url).pathname,
-
-  // Dashboard
-  dashboardPort: parseInt(process.env.DASHBOARD_PORT || '3000', 10),
+  // Scheduler
+  schedulerIntervalMs: parseInt(process.env.SCHEDULER_INTERVAL_MS || '15000', 10),
+  minPostIntervalMs: parseInt(process.env.MIN_POST_INTERVAL_MS || '60000', 10),
 };

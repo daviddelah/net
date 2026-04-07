@@ -1,26 +1,29 @@
 {
-  "name": "trend2token",
-  "version": "2.0.0",
-  "description": "Monitor Farcaster for viral trends and deploy memecoins via Clanker",
+  "name": "net",
+  "version": "1.0.0",
+  "description": "Social media scheduling tool — compose once, publish everywhere",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dashboard": "node src/dashboard/server.js",
-    "status": "node src/cli/status.js",
-    "trends": "node src/cli/trends.js",
-    "launches": "node src/cli/launches.js",
-    "stats": "node src/cli/stats.js",
-    "import-twitter": "node src/tools/twitter-import.js"
+    "dev": "node --watch src/index.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "import-twitter": "node src/tools/twitter-import.js",
+    "cli": "node src/cli/net.js"
   },
   "dependencies": {
-    "@steipete/bird": "^0.8.0",
+    "@libsql/client": "^0.17.2",
     "better-sqlite3": "^11.7.0",
-    "bird": "^0.7.0",
+    "busboy": "^1.6.0",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
+    "cron-parser": "^4.9.0",
     "dotenv": "^16.4.7",
     "ws": "^8.17.1"
+  },
+  "devDependencies": {
+    "@steipete/bird": "^0.8.0"
   },
   "engines": {
     "node": ">=18.0.0"
