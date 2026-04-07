@@ -14,7 +14,9 @@ export const config = {
   twitterCt0: process.env.CT0 || '',
 
   // Database (Turso remote or local file)
-  dbUrl: process.env.TURSO_DATABASE_URL || `file:${new URL('../data/net.db', import.meta.url).pathname}`,
+  dbUrl: process.env.TURSO_DATABASE_URL && process.env.TURSO_DATABASE_URL.length > 0
+    ? process.env.TURSO_DATABASE_URL
+    : `file:${new URL('../data/net.db', import.meta.url).pathname}`,
   dbAuthToken: process.env.TURSO_AUTH_TOKEN || '',
 
   // Server

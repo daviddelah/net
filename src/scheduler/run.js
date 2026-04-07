@@ -18,7 +18,9 @@ import { processQueue } from './queue.js';
 import { getAdapter } from '../platforms/index.js';
 
 async function run() {
+  const { config } = await import('../config.js');
   console.log(`[${new Date().toISOString()}] Scheduler run starting...`);
+  console.log(`DB URL: ${config.dbUrl.startsWith('libsql') ? config.dbUrl.split('.')[0] + '...' : 'local file'}`);
 
   await getDb();
 
