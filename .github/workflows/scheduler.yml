@@ -24,7 +24,7 @@ jobs:
       - name: Run scheduler
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_TOKEN }}
           NEYNAR_API_KEY: ${{ secrets.NEYNAR_API_KEY }}
           FARCASTER_SIGNER_UUIDS: ${{ secrets.FARCASTER_SIGNER_UUIDS }}
           AUTH_TOKEN: ${{ secrets.TWITTER_AUTH_TOKEN }}
